@@ -117,7 +117,7 @@
 #endif
 
 // 贪吃蛇游戏APP
-#define APP_GAME_SNAKE_USE 1
+#define APP_GAME_SNAKE_USE 0
 #if APP_GAME_SNAKE_USE
 #include "app/game_snake/game_snake.h"
 #endif
