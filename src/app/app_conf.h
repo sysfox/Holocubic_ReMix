@@ -48,7 +48,7 @@
 #endif
 
 // 特效动画APP
-#define APP_IDEA_ANIM_USE 1
+#define APP_IDEA_ANIM_USE 0
 #if APP_IDEA_ANIM_USE
 #include "app/idea_anim/idea.h"
 #endif
@@ -91,7 +91,7 @@
 #endif
 
 // 股票行情查看APP
-#define APP_STOCK_MARKET_USE 1
+#define APP_STOCK_MARKET_USE 0
 #if APP_STOCK_MARKET_USE
 #include "app/stockmarket/stockmarket.h"
 #endif
