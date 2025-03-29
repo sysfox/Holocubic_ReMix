@@ -210,8 +210,7 @@ static void get_new_version(char *version)
     httpClient.setTimeout(1000);
 
     // 使用 GitHub API 获取最新版本信息
-    bool status = httpClient.begin(NEW_VERSION);
-    if (!status)
+    if (!httpClient.begin(NEW_VERSION))
     {
         snprintf(version, 16, "v UNKNOWN");
         Serial.println("Failed to connect to GitHub API");
@@ -242,10 +241,10 @@ static void get_new_version(char *version)
 
     tagIndex += 11; // 跳过 "tag_name":" 的长度
     int endIndex = httpResponse.indexOf("\"", tagIndex);
-    if (endIndex == -1)
+    if (endIndex == -1 || endIndex - tagIndex >= 16)
     {
         snprintf(version, 16, "v UNKNOWN");
-        Serial.println("Failed to parse version from response");
+        Serial.println("Version string too long or invalid");
         return;
     }
 
