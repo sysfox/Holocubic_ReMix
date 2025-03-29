@@ -6,7 +6,7 @@
 
 #define NEW_VERSION "http://api.github.com/repos/sysfox/Holocubic_ReMix/releases/latest"
 #define SETTINGS_APP_NAME "Settings"
-#define RECV_BUF_LEN 128
+#define RECV_BUF_LEN 512
 
 struct SettingsAppRunData
 {
@@ -208,7 +208,8 @@ static void get_new_version(char *version)
 {
     HTTPClient httpClient;
     httpClient.setTimeout(1000);
-
+    httpClient.addHeader("Accept", "application/vnd.github.v3+json");
+    httpClient.addHeader("User-Agent", "ESP32");
     // 使用 GitHub API 获取最新版本信息
     if (!httpClient.begin(NEW_VERSION))
     {
