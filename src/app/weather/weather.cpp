@@ -18,7 +18,7 @@
 #define QWEATHER_AIR_QUALITY_NOW_API "https://devapi.qweather.com/v7/air/now?location=%s&key=%s"
 #define QWEATHER_LOCATION_ID_API "https://geoapi.qweather.com/v2/city/lookup?range=%s&adm=%s&location=%s&key=%s"
 
-#define TIME_API "https://api.m.taobao.com/rest/api3.do?api=mtop.common.getTimestamp"
+#define TIME_API "https://acs.m.taobao.com/gw/mtop.common.getTimestamp/"
 #define IP_INFO_API "https://ip.useragentinfo.com/json"
 
 #define UPDATE_WEATHER 0x01       // 更新天气
