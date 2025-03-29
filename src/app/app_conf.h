@@ -128,7 +128,7 @@
 #endif
 
 // Hitokoto应用
-#define APP_HITOKOTO_USE 1
+#define APP_HITOKOTO_USE 0
 #if APP_HITOKOTO_USE
 #include "app/hitokoto/hitokoto.h"
 #endif
