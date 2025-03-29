@@ -4,7 +4,7 @@
 #include "sys/app_controller.h"
 #include "common.h"
 
-#define NEW_VERSION "http://climbsnail.cn:5001/holocubicReMix/sn/v1/version/firmware"
+#define NEW_VERSION "http://api.github.com/repos/sysfox/Holocubic_ReMix/releases/latest"
 #define SETTINGS_APP_NAME "Settings"
 #define RECV_BUF_LEN 128
 
@@ -160,8 +160,7 @@ static int settings_init(AppController *sys)
     run_data = (SettingsAppRunData *)calloc(1, sizeof(SettingsAppRunData));
     run_data->recv_buf = (uint8_t *)malloc(RECV_BUF_LEN);
     run_data->recv_len = 0;
-    sys->send_to(SETTINGS_APP_NAME, CTRL_NAME,
-                 APP_MESSAGE_WIFI_CONN, NULL, NULL);
+    sys->send_to(SETTINGS_APP_NAME, CTRL_NAME,APP_MESSAGE_WIFI_CONN, NULL, NULL);
     return 0;
 }
 
@@ -176,15 +175,13 @@ static void settings_process(AppController *sys,
 
     if (GO_FORWORD == act_info->active)
     {
-        sys->send_to(SETTINGS_APP_NAME, CTRL_NAME,
-                     APP_MESSAGE_WIFI_CONN, NULL, NULL);
+        sys->send_to(SETTINGS_APP_NAME, CTRL_NAME,APP_MESSAGE_WIFI_CONN, NULL, NULL);
         delay(500);
     }
 
     if (Serial.available())
     {
-        uint16_t len = Serial.read(run_data->recv_buf + run_data->recv_len,
-                                   RECV_BUF_LEN - run_data->recv_len);
+        uint16_t len = Serial.read(run_data->recv_buf + run_data->recv_len,RECV_BUF_LEN - run_data->recv_len);
 
         run_data->recv_len += len;
         if (run_data->recv_len > 0)
@@ -211,16 +208,50 @@ static void get_new_version(char *version)
 {
     HTTPClient httpClient;
     httpClient.setTimeout(1000);
+
+    // 使用 GitHub API 获取最新版本信息
     bool status = httpClient.begin(NEW_VERSION);
-    if (status == false)
+    if (!status)
     {
         snprintf(version, 16, "v UNKNOWN");
+        Serial.println("Failed to connect to GitHub API");
+        return;
     }
+
     int httpCode = httpClient.GET();
+    if (httpCode != 200)
+    {
+        snprintf(version, 16, "v UNKNOWN");
+        Serial.printf("HTTP GET failed, code: %d\n", httpCode);
+        httpClient.end();
+        return;
+    }
+
+    // 解析 GitHub API 的 JSON 响应
     String httpResponse = httpClient.getString();
     httpClient.end();
-    snprintf(version, 16, "%s", httpResponse.c_str() + 13);
-    Serial.printf("latest version = %s\n", version);
+
+    // 提取版本号字段
+    int tagIndex = httpResponse.indexOf("\"tag_name\":\"");
+    if (tagIndex == -1)
+    {
+        snprintf(version, 16, "v UNKNOWN");
+        Serial.println("Failed to parse version from response");
+        return;
+    }
+
+    tagIndex += 11; // 跳过 "tag_name":" 的长度
+    int endIndex = httpResponse.indexOf("\"", tagIndex);
+    if (endIndex == -1)
+    {
+        snprintf(version, 16, "v UNKNOWN");
+        Serial.println("Failed to parse version from response");
+        return;
+    }
+
+    String latestVersion = httpResponse.substring(tagIndex, endIndex);
+    snprintf(version, 16, "%s", latestVersion.c_str());
+    Serial.printf("Latest version = %s\n", version);
 }
 
 static void settings_background_task(AppController *sys,
