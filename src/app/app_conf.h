@@ -127,4 +127,10 @@
 #include "app/LHLXW/LHLXW.h"
 #endif
 
+// Hitokoto应用
+#define APP_HITOKOTO_USE 1
+#if APP_HITOKOTO_USE
+#include "app/hitokoto/hitokoto.h"
+#endif
+
 #endif
